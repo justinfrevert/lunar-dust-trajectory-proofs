@@ -64,10 +64,10 @@ fn calculate_trajectory(t: f64) -> (f64, f64) {
     let gm: f64 = 1.6;
 
     // Value for a given value in the paper by:
-    // $x = X_0 + V_{X_o}t$
+    // $x = X_0 + V_{X_0}t$
     let x = x0 + vx0 * t;
-    // Value
+    // Value for a given y, given in the paper by:
+    // $Z_0 + V_{Z_0}t - 1/2g_{M}t^2$
     let z = z0 + vz0 * t - (0.5 * gm * (t * t));
-
     (x, z)
 }
