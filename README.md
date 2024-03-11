@@ -5,8 +5,10 @@ I created this repo after noting lack of trust in expert opinion on the informat
 
 ## Structure
 `graphs` - hosts the dust trajectory graph we plot with our data, as well as the matching graph from the original paper.
+
 `host` - host-side code for preparing the RISC Zero ZKVM guest as well as code for plotting graphs.
-`methods` - This code uses RISC Zero to generate STARK proofs of the correct execution of the code we care about proving.
+
+`methods` - This code uses RISC Zero to generate STARK proofs of the correct execution of the code we care about proving. **The core functionality for the code we care about is in (https://github.com/justinfrevert/lunar-dust-trajectory-proofs/blob/main/methods/guest/src/main.rs))**
 
 ## Description
 I provide expected values for the dust trajectory of both clips. I've gotten these by simply trying to perform the calculations in the paper(See `Introduction`). Within the context of code which generates a proof, I simply check that the math produces these same values. If they do, we generate a proof that it is the case.
