@@ -16,9 +16,9 @@ Those expected values fall along the areas of dust shown in the paper, so if our
 To compare, check the produced graph in `graphs/simulated.png` with the original graph in `graphs/source-graph.png`
 
 # ZK Proofs and RISC Zero
-If you're unfamiliar with ZK proofs, see the [wikipedia article](https://en.wikipedia.org/wiki/Zero-knowledge_proof).
-This code uses RISC Zero to write STARK proofs from plain rust. [See more](https://www.risczero.com/)
-.
+If you're unfamiliar with the concept of Zero-knowledge, see the [wikipedia article](https://en.wikipedia.org/wiki/Zero-knowledge_proof).
+This code uses RISC Zero to write STARK proofs from plain rust. [See more](https://www.risczero.com/).
+
 # How to use
 To run the code to generate and verify the proof, and generate the graph:
 1. Install [rust](https://www.rust-lang.org/tools/install)
