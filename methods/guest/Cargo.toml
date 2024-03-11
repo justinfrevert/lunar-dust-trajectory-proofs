@@ -9,5 +9,5 @@ edition = "2021"
 # If you want to try (experimental) std support, add `features = [ "std" ]` to risc0-zkvm
 risc0-zkvm = { version = "0.19.1", default-features = false, features = ["std"] }
 smallvec = { version = "1.13.1", default-features = false }
-
+trajectory-core = { path = "../../core"}
 log = "0.4.0"

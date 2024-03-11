@@ -3,43 +3,15 @@
 use methods::{PROVE_MOON_LANDING_ELF, PROVE_MOON_LANDING_ID};
 use risc0_zkvm::{default_prover, ExecutorEnv};
 use plotters::prelude::*;
-
-const APPROXIMATE_MOON_TRAJECTORY: [(f64, f64, f64); 27] = [
-    // s, x, z
-    (0.1, 0.07900000000000003, 0.175),
-    (0.2, 0.23800000000000004, 0.374),
-    (0.30000000000000004, 0.3970000000000001, 0.5569999999999999),
-    (0.4, 0.5560000000000002, 0.724),
-    (0.5, 0.7150000000000001, 0.875),
-    (0.6, 0.874, 1.0099999999999998),
-    (0.7, 1.033, 1.129),
-    (0.7999999999999999, 1.192, 1.2319999999999998),
-    (0.8999999999999999, 1.3509999999999998, 1.3189999999999997),
-    (0.9999999999999999, 1.5099999999999998, 1.3899999999999997),
-    (1.0999999999999999, 1.6689999999999998, 1.4449999999999998),
-    (1.2, 1.8279999999999998, 1.4839999999999998),
-    (1.3, 1.987, 1.5069999999999997),
-    (1.4000000000000001, 2.1460000000000004, 1.5139999999999998),
-    (1.5000000000000002, 2.3050000000000006, 1.505),
-    (1.6000000000000003, 2.4640000000000004, 1.4799999999999995),
-    (1.7000000000000004, 2.6230000000000007, 1.4389999999999996),
-    (1.8000000000000005, 2.782000000000001, 1.3819999999999997),
-    (1.9000000000000006, 2.941000000000001, 1.3089999999999993),
-    (2.0000000000000004, 3.100000000000001, 1.2199999999999993),
-    (2.1000000000000005, 3.259000000000001, 1.1149999999999989),
-    (2.2000000000000006, 3.418000000000001, 0.9939999999999993),
-    (2.3000000000000007, 3.5770000000000013, 0.8569999999999984),
-    (2.400000000000001, 3.7360000000000015, 0.7039999999999988),
-    (2.500000000000001, 3.8950000000000014, 0.5349999999999984),
-    (2.600000000000001, 4.054000000000002, 0.349999999999997),
-    (2.700000000000001, 4.213000000000002, 0.14899999999999824),
-];
+use trajectory_core::{APPROXIMATE_CLIP_ONE_TRAJECTORY, APPROXIMATE_CLIP_TWO_TRAJECTORY};
 
 fn main() {
     env_logger::init();
 
-    plot().unwrap();
-    println!("Plotted our data in `./graphs/generated.png`");
+    plot(1, APPROXIMATE_CLIP_ONE_TRAJECTORY, 4.5f32, -0f32).unwrap();
+    println!("Plotted clip 1 data in `graphs/simulated-clip-1.png`");
+    plot(2, APPROXIMATE_CLIP_TWO_TRAJECTORY, 9.5f32, 3.8).unwrap();
+    println!("Plotted clip 2 data in `graphs/simulated-clip-2.png`");
 
     let env = ExecutorEnv::builder().build().unwrap();
 
@@ -58,21 +30,22 @@ fn main() {
 }
 
 
-fn plot() -> Result<(), Box<dyn std::error::Error>> {
-    let root = BitMapBackend::new("graphs/simulated.png", (640, 480)).into_drawing_area();
+fn plot(clip_number: u8, trajectory: [(f64, f64); 27], xsize: f32, ysize: f32) -> Result<(), Box<dyn std::error::Error>> {
+    let filename = format!("graphs/simulated-clip-{}.png", clip_number);
+    let root = BitMapBackend::new(&filename, (640, 480)).into_drawing_area();
     root.fill(&WHITE)?;
     let mut chart = ChartBuilder::on(&root)
         .caption("Simulated Dust Trajectory", ("sans-serif", 50).into_font())
         .margin(5)
         .x_label_area_size(30)
         .y_label_area_size(30)
-        .build_cartesian_2d(0f32..4.5f32, -0f32..1.8f32)?;
+        .build_cartesian_2d(0f32..xsize, -0f32..ysize)?;
 
     chart.configure_mesh().draw()?;
 
     chart
         .draw_series(LineSeries::new(
-            APPROXIMATE_MOON_TRAJECTORY.iter().map(|&(_, x, z)| (x as f32, z as f32)),
+            trajectory.iter().map(|&(x, z)| (x as f32, z as f32)),
             &RED,
         ))?
         .label("Simulated lunar trajectory")
