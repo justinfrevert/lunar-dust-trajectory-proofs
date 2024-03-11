@@ -2,10 +2,44 @@
 // The ELF is used for proving and the ID is used for verification.
 use methods::{PROVE_MOON_LANDING_ELF, PROVE_MOON_LANDING_ID};
 use risc0_zkvm::{default_prover, ExecutorEnv};
+use plotters::prelude::*;
+
+const APPROXIMATE_MOON_TRAJECTORY: [(f64, f64, f64); 27] = [
+    // s, x, z
+    (0.1, 0.07900000000000003, 0.175),
+    (0.2, 0.23800000000000004, 0.374),
+    (0.30000000000000004, 0.3970000000000001, 0.5569999999999999),
+    (0.4, 0.5560000000000002, 0.724),
+    (0.5, 0.7150000000000001, 0.875),
+    (0.6, 0.874, 1.0099999999999998),
+    (0.7, 1.033, 1.129),
+    (0.7999999999999999, 1.192, 1.2319999999999998),
+    (0.8999999999999999, 1.3509999999999998, 1.3189999999999997),
+    (0.9999999999999999, 1.5099999999999998, 1.3899999999999997),
+    (1.0999999999999999, 1.6689999999999998, 1.4449999999999998),
+    (1.2, 1.8279999999999998, 1.4839999999999998),
+    (1.3, 1.987, 1.5069999999999997),
+    (1.4000000000000001, 2.1460000000000004, 1.5139999999999998),
+    (1.5000000000000002, 2.3050000000000006, 1.505),
+    (1.6000000000000003, 2.4640000000000004, 1.4799999999999995),
+    (1.7000000000000004, 2.6230000000000007, 1.4389999999999996),
+    (1.8000000000000005, 2.782000000000001, 1.3819999999999997),
+    (1.9000000000000006, 2.941000000000001, 1.3089999999999993),
+    (2.0000000000000004, 3.100000000000001, 1.2199999999999993),
+    (2.1000000000000005, 3.259000000000001, 1.1149999999999989),
+    (2.2000000000000006, 3.418000000000001, 0.9939999999999993),
+    (2.3000000000000007, 3.5770000000000013, 0.8569999999999984),
+    (2.400000000000001, 3.7360000000000015, 0.7039999999999988),
+    (2.500000000000001, 3.8950000000000014, 0.5349999999999984),
+    (2.600000000000001, 4.054000000000002, 0.349999999999997),
+    (2.700000000000001, 4.213000000000002, 0.14899999999999824),
+];
 
 fn main() {
-    // Initialize tracing. In order to view logs, run `RUST_LOG=info cargo run`
     env_logger::init();
+
+    plot().unwrap();
+    println!("Plotted our data in `./graphs/generated.png`");
 
     let env = ExecutorEnv::builder().build().unwrap();
 
@@ -15,12 +49,42 @@ fn main() {
     // Produce a receipt by proving the specified ELF binary.
     let receipt = prover.prove_elf(env, PROVE_MOON_LANDING_ELF).unwrap();
 
-    // For example:
+    println!("Generated a proof that the trajactory calculation matches the expectation.");
+
     let _output: u32 = receipt.journal.decode().unwrap();
 
-    // Optional: Verify receipt to confirm that recipients will also be able to
-    // verify your receipt
     receipt.verify(PROVE_MOON_LANDING_ID).unwrap();
+    println!("I verified the proof for the trajectory calculation.");
+}
 
-    println!("I verified the proof for the trajectory calculation");
+
+fn plot() -> Result<(), Box<dyn std::error::Error>> {
+    let root = BitMapBackend::new("graphs/simulated.png", (640, 480)).into_drawing_area();
+    root.fill(&WHITE)?;
+    let mut chart = ChartBuilder::on(&root)
+        .caption("Simulated Dust Trajectory", ("sans-serif", 50).into_font())
+        .margin(5)
+        .x_label_area_size(30)
+        .y_label_area_size(30)
+        .build_cartesian_2d(0f32..4.5f32, -0f32..1.8f32)?;
+
+    chart.configure_mesh().draw()?;
+
+    chart
+        .draw_series(LineSeries::new(
+            APPROXIMATE_MOON_TRAJECTORY.iter().map(|&(_, x, z)| (x as f32, z as f32)),
+            &RED,
+        ))?
+        .label("Simulated lunar trajectory")
+        .legend(|(x, y)| PathElement::new(vec![(x, y), (x + 20, y)], &RED));
+
+    chart
+        .configure_series_labels()
+        .background_style(&WHITE.mix(0.8))
+        .border_style(&BLACK)
+        .draw()?;
+
+    root.present()?;
+
+    Ok(())
 }

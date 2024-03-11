@@ -56,17 +56,22 @@ pub fn main() {
 }
 
 fn calculate_trajectory(t: f64) -> (f64, f64) {
+    // Parameters which fit the ballistic equation, see: Table I.
+    /// $x_0$ parameter for the first clip
     let x0: f64 = -0.08;
+    /// $z_0$ parameter for the first clip
     let z0: f64 = -0.04;
+    /// $V_{x_0}$ parameter for the first clip
     let vx0: f64 = 1.59;
+    /// $V_{z_0}$ parameter for the first clip
     let vz0: f64 = 2.23;
     // The value we use for moon's gravity
     let gm: f64 = 1.6;
 
-    // Value for a given value in the paper by:
+    // Value for a given x
     // $x = X_0 + V_{X_0}t$
     let x = x0 + vx0 * t;
-    // Value for a given y, given in the paper by:
+    // Value for a given y
     // $Z_0 + V_{Z_0}t - 1/2g_{M}t^2$
     let z = z0 + vz0 * t - (0.5 * gm * (t * t));
     (x, z)
