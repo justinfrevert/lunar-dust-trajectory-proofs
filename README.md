@@ -1,4 +1,4 @@
-# Moon Landing Proofs
+# Lunar Dust Trajectory proofs
 
 I created this repo after noting lack of trust in expert opinion on the information in *[Tracking Lunar Dust - Analysis of Apollo Footage
 ](https://www.researchgate.net/publication/258468670_Tracking_Lunar_Dust_-_Analysis_of_Apollo_Footage)*. I attempt to recreate some of the computations here, and prove them using RISC Zero's tooling. The hope is that doing so in such a trustless way might improve trust in the research. The lack of trust I noticed was around the computations performed in the math, so I will limit this work to minimally cover that portion. This work is intended for people who do not have an understanding of the original paper. The ultimate goal for this is that you *should be able to check the simple calculations for x and y, and see that we've copied them plainly into the code.*
