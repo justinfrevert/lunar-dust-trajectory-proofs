@@ -8,7 +8,7 @@ use trajectory_core::{APPROXIMATE_CLIP_ONE_TRAJECTORY, APPROXIMATE_CLIP_TWO_TRAJ
 fn main() {
     env_logger::init();
 
-    plot(1, APPROXIMATE_CLIP_ONE_TRAJECTORY, 4.5f32, -0f32).unwrap();
+    plot(1, APPROXIMATE_CLIP_ONE_TRAJECTORY, 4.5f32, 1.8f32).unwrap();
     println!("Plotted clip 1 data in `graphs/simulated-clip-1.png`");
     plot(2, APPROXIMATE_CLIP_TWO_TRAJECTORY, 9.5f32, 3.8).unwrap();
     println!("Plotted clip 2 data in `graphs/simulated-clip-2.png`");
@@ -28,7 +28,6 @@ fn main() {
     receipt.verify(PROVE_MOON_LANDING_ID).unwrap();
     println!("I verified the proof for the trajectory calculation.");
 }
-
 
 fn plot(clip_number: u8, trajectory: [(f64, f64); 27], xsize: f32, ysize: f32) -> Result<(), Box<dyn std::error::Error>> {
     let filename = format!("graphs/simulated-clip-{}.png", clip_number);
